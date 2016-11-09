@@ -1,0 +1,9 @@
+#!/bin/sh
+
+# list of items to track
+tracked_items="\
+	.gitconfig
+	.bash_aliases
+	.bashrc
+	.profile\
+"
