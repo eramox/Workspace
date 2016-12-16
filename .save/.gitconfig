@@ -1,0 +1,174 @@
+[include]
+	path = .gitconfig.local ; specify local configuration like user: work/personnal separation
+
+[alias]
+## cm
+        cm = checkout master
+
+## b: list all branches
+        b = branch -vv
+
+## br: list local branches
+        br = !sh -c 'git branch -avv --color | less -r' -
+
+## co: for checkout - useful to checkout a branch and keeps its name -> branch switching	
+# $1 shall be the name of the branch
+        co = !sh -c 'git checkout $1' -
+
+## ch: for checkout head a file
+# $1 shall be the name o fthe file
+        ch = !sh -c 'git checkout HEAD "$1"' -
+
+## rtco: for checkout from another remote- useful to checkout a remote branch on different repo
+# $1 shall be the name of the branch
+# $2 shall be the name of the remote repository
+        rtco = !sh -c 'git fetch $2 && git pull $2 && git checkout --track $2/$1' -
+
+## tco: for track and checkout - useful to checkout a remote branch, create it localy and keeps its name and track it automatically
+# $1 shall be the name of the branch
+        tco = !sh -c 'echo "$1" | sed "s#remotes/origin/##" | xargs -I{} git rtco {} origin' -
+
+## st: status
+        st = status
+## c: commit
+        c = commit -s
+## fc: file commit
+# $1 file to commit
+        fc = !sh -c 'git add $1 && git c' -
+## cam: commit amend
+        cam = commit --amend
+## all: all files
+	all = add -A
+## call: quick commit
+        call = !sh -c 'git all && git commit -s' -
+## camall: quick amend
+        camall = !sh -c 'git all && git commit --amend' -
+## q: quick commit
+        q = !sh -c 'git all && git commit -s -m "quickCommit"' -
+
+## rb: rebase
+# $1 is the number of commit to rebase upon
+        rb  = !sh -c 'git rebase -i HEAD~$1' -
+## rbc: continue rebase
+        rbc = rebase --continue
+## rbs: skip rebase
+        rbs = rebase --skip
+## rba: abort rebase
+        rba = rebase --abort
+
+## rbe: edit a file and add it to stagging
+# $1 file to edit
+	rbe  = !sh -c 'nano $1 && git add $1' -
+
+## useold : to use old revision of the file (left)
+# $1 file to use old version
+	useold  = !sh -c 'git checkout --ours $1 && git add $1' -
+
+## usenew : to use new revision of the file (right)
+# $1 file to use new version
+	usenew  = !sh -c 'git checkout --theirs $1 && git add $1' -
+
+## amc: continue am
+        amc = am --continue
+## ams: skip am
+        ams = am --skip
+## ama: abort am
+        ama = am --abort
+
+## d: diff with last commits
+# $1 the number of commits to diff with
+        d = !sh -c 'git diff HEAD~$1' -
+
+## cp: cherrypick a patch
+# $1 the commit to cherry pick
+        cp = !sh -c 'git cherry-pick $1' -
+## lcp: local cherrypick a patch
+# $1 the repo to use identified by its local path
+# $2 the commit to cherry pick
+        lcp = !sh -c 'git --git-dir="$1"/.git \
+			format-patch -k -1 --stdout $2 | \
+			git am -3 -k' -
+
+## pfl: when push fail
+        pfl = push --force-with-lease
+## pat push current branch to remote and track it
+# $1 name of the local branch - to get by ps1
+        pat = !sh -c 'git push origin $1:$1' -
+
+## bnew
+# $1 the name of the branch
+        bnew = !sh -c 'echo "Creating branch $1" && git cm && git branch $1 && git co $1 && git align $1' -
+## brem
+# $1 the name of the branch to delete locally
+        brem = !sh -c 'git cm && git branch -d $1' -
+## bkill
+# $1 the name of the branch to delete locally and on remote
+        bkill = !sh -c 'git cm && git branch -D $1 && git push origin --delete $1' -
+## rename
+# $1 the old name of the branch
+# $2 the new name of the branch
+        rename = !sh -c 'git branch -m $1 $2' -
+## remdel remove all deleted file
+        remdel = !sh -c 'git st | grep "deleted:" | awk '{print $2}' | xargs git rm' -
+
+## sync  fetch and rebase brnach on master
+        sync = !sh -c 'git fetch && git rebase origin/master' -
+## dsync  sync deleted branches
+        dsync = fetch --all --prune
+## bsync  fetch and rebase brnach on custom branch
+        bsync = !sh -c 'git fetch origin $1 && git rebase origin/$1' -
+## rsync  fetch and rebase brnach on master
+        rsync = !sh -c 'git fetch $1 master && git rebase $1/master' -
+## rbsync  fetch and rebase brnach on custom branch
+        rbsync = !sh -c 'git fetch $1 $2 && git rebase $1/$2' -
+
+## dimeld: diff between branches in meld !!1 git difftool -g -d master..update
+# $1 the left version 
+# $2 the right version
+	dimeld = !sh -c 'git difftool -g -d $1..$2' -
+
+## align  push new branch
+# $1 the branch to push
+	align = !sh -c 'git push -u origin $1' -
+
+## force  push new branch
+# $@ the branch to push
+	force = !sh -c 'git "$@" -f' -
+
+## nlog show latest logs
+# $1 option for log
+	nlog = !sh -c 'git log -n 5 --oneline $1' -
+
+## testPR test a Pull Request
+# $1 the PR number
+	testpr = !sh -c 'PRbranch=\"PRtest/$1\" && git sync && git fetch origin refs/pull-requests/$1/from:$PRbranch && git co $PRbranch' -
+
+## gitkall: View all git branches
+	kall = ! sh -c 'sh ~/gitkall.sh ' - ; not working properly, need to put it in a script file, but usefull
+
+## gitreset: Reset the branch to remote state
+	gitreset = !sh -c 'git cm && git fetch origin && git reset --hard origin/master' -
+
+## file
+#	file = !sh -c 'if [ "$1" == "" ];then mhead="HEAD"; else mhead="HEAD~$1"; fi ' -
+#	file = !sh -c 'if [ "$1" == "" ];then echo 0; fi ' -
+	file = !sh -c 'git show --stat --oneline HEAD' -
+
+## k
+	k = !sh -c 'gitk' -
+
+## mreset
+	mreset = !sh -c 'git reset --hard origin/master' -
+
+[push]
+        default = matching
+[color]
+	ui = auto
+[diff]
+	tool = meld
+	guitool = meld
+[difftool]
+	prompt = false
+[merge]
+	tool = meld
+	guitool = meld

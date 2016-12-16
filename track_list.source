@@ -1,9 +1,35 @@
 #!/bin/sh
 
 # list of items to track
+# by default, the elements are picked from user directory
 tracked_items="\
 	.gitconfig
 	.bash_aliases
 	.bashrc
 	.profile\
 "
+
+# This method will properly return error code
+
+#END_ENTRY="\n"
+#END_LIST=""
+# This variable hold a list of entries which are parsed and the delimiter is the linefeed
+#meta_component =  "optee-os     recipes-tee/optee-os       tar.bz2  ${END_ENTRY}"
+#meta_component += "optee-client recipes-tee/optee-client   tar.bz2  ${END_ENTRY}"
+#meta_component += "optee-test   recipes-tee/optee-test     tar.bz2  ${END_ENTRY}"
+#meta_component += "optee-hello  recipes-tee/optee-hello    tar.bz2  ${END_ENTRY}"
+
+#meta_component += "optee-example-storage  recipes-tee/optee-example_storage    tar.bz2  ${END_ENTRY}"
+#meta_component += "optee-example-ta2ta    recipes-tee/optee-example_ta2ta      tar.bz2  ${END_ENTRY}"
+#meta_component += "optee-example-crypto   recipes-tee/optee-example_crypto     tar.bz2  ${END_ENTRY}"
+#meta_component += "optee-ta-ocotp         recipes-tee/optee-ta_ocotp           tar.bz2  ${END_ENTRY}"
+#meta_component += "optee-ta-ocram         recipes-tee/optee-ta_ocram           tar.bz2  ${END_ENTRY}"
+#meta_component += "optee-ta-version       recipes-tee/optee-ta_version         tar.bz2  ${END_ENTRY}"
+#meta_component += "optee-ca-lifecycle     recipes-tee/optee-ca_lifecycle       tar.bz2  ${END_ENTRY}"
+
+#meta_component += "linux-imx    recipes-kernel/linux       patch    ${END_ENTRY}"
+#meta_component += "u-boot-imx   recipes-uboot/u-boot       patch    ${END_LIST}"
+
+#while read pn path pack ; do
+#	echo $pn $path $pack
+#done < <(echo "$meta_component")
