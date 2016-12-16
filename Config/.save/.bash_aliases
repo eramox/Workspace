@@ -131,3 +131,6 @@ alias gti='git'
 
 #disable auto open
 # gsettings set org.gnome.desktop.media-handling automount-open false
+
+#Build linux kernel
+#PATH="/home/nxf07296/workspace/Builds/buildroot_imx6q/host/bin:/home/nxf07296/workspace/Builds/buildroot_imx6q/host/sbin:/home/nxf07296/workspace/Builds/buildroot_imx6q/host/usr/bin:/home/nxf07296/workspace/Builds/buildroot_imx6q/host/usr/sbin:/home/nxf07296/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/local/go/bin" BR_BINARIES_DIR=/home/nxf07296/workspace/Builds/buildroot_imx6q/images /usr/bin/make -j5 HOSTCC="/home/nxf07296/workspace/Builds/buildroot_imx6q/host/usr/bin/ccache /usr/bin/gcc" HOSTCFLAGS="" ARCH=arm INSTALL_MOD_PATH=/home/nxf07296/workspace/Builds/buildroot_imx6q/target CROSS_COMPILE="/home/nxf07296/workspace/Builds/buildroot_imx6q/host/usr/bin/arm-buildroot-linux-gnueabi-" DEPMOD=/home/nxf07296/workspace/Builds/buildroot_imx6q/host/sbin/depmod -C /home/nxf07296/workspace/Builds/buildroot_imx6q/build/linux-custom imx6q-sabreauto.dtb

@@ -1,22 +1,21 @@
-[user]
-        email = franck.lenormand@nxp.com
-        name = Franck LENORMAND
+[include]
+	path = .gitconfig.local ; specify local configuration like user: work/personnal separation
 
 [alias]
 ## cm
         cm = checkout master
 
 ## b: list all branches
-        b = branch -avv
+        b = branch -vv
 
 ## br: list local branches
-        br = branch -vv
+        br = !sh -c 'git branch -avv --color | less -r' -
 
 ## co: for checkout - useful to checkout a branch and keeps its name -> branch switching	
 # $1 shall be the name of the branch
         co = !sh -c 'git checkout $1' -
 
-## ch: for checkout head a file - useful to checkout a branch and keeps its name
+## ch: for checkout head a file
 # $1 shall be the name o fthe file
         ch = !sh -c 'git checkout HEAD "$1"' -
 
@@ -27,16 +26,19 @@
 
 ## tco: for track and checkout - useful to checkout a remote branch, create it localy and keeps its name and track it automatically
 # $1 shall be the name of the branch
-        tco = !sh -c 'git rtco $1 origin' -
+        tco = !sh -c 'echo "$1" | sed "s#remotes/origin/##" | xargs -I{} git rtco {} origin' -
 
 ## st: status
         st = status
 ## c: commit
         c = commit -s
+## fc: file commit
+# $1 file to commit
+        fc = !sh -c 'git add $1 && git c' -
 ## cam: commit amend
         cam = commit --amend
 ## all: all files
-	all = add *
+	all = add -A
 ## call: quick commit
         call = !sh -c 'git all && git commit -s' -
 ## camall: quick amend
@@ -53,6 +55,18 @@
         rbs = rebase --skip
 ## rba: abort rebase
         rba = rebase --abort
+
+## rbe: edit a file and add it to stagging
+# $1 file to edit
+	rbe  = !sh -c 'nano $1 && git add $1' -
+
+## useold : to use old revision of the file (left)
+# $1 file to use old version
+	useold  = !sh -c 'git checkout --ours $1 && git add $1' -
+
+## usenew : to use new revision of the file (right)
+# $1 file to use new version
+	usenew  = !sh -c 'git checkout --theirs $1 && git add $1' -
 
 ## amc: continue am
         amc = am --continue
@@ -84,9 +98,12 @@
 ## bnew
 # $1 the name of the branch
         bnew = !sh -c 'echo "Creating branch $1" && git branch $1 && git co $1 && git align $1' -
-## bdel
-# $1 the name of the branch to delete
-        bdel = !sh -c 'git cm && git branch -d $1' -
+## brem
+# $1 the name of the branch to delete locally
+        brem = !sh -c 'git cm && git branch -d $1' -
+## bkill
+# $1 the name of the branch to delete locally and on remote
+        bkill = !sh -c 'git cm && git branch -D $1 && git push origin --delete $1' -
 ## rename
 # $1 the old name of the branch
 # $2 the new name of the branch
@@ -95,7 +112,9 @@
         remdel = !sh -c 'git st | grep "deleted:" | awk '{print $2}' | xargs git rm' -
 
 ## sync  fetch and rebase brnach on master
-        sync = !sh -c 'git fetch origin master && git rebase origin/master' -
+        sync = !sh -c 'git fetch && git rebase origin/master' -
+## dsync  sync deleted branches
+        dsync = fetch --all --prune
 ## bsync  fetch and rebase brnach on custom branch
         bsync = !sh -c 'git fetch origin $1 && git rebase origin/$1' -
 ## rsync  fetch and rebase brnach on master
@@ -122,10 +141,10 @@
 
 ## testPR test a Pull Request
 # $1 the PR number
-	testpr = !sh -c 'PRbranch=\"PRtest/$1\" && git fetch origin refs/pull-requests/$1/from:$PRbranch && git checkout $PRbranch' -
+	testpr = !sh -c 'PRbranch=\"PRtest/$1\" && git sync && git fetch origin refs/pull-requests/$1/from:$PRbranch && git co $PRbranch' -
 
 ## gitkall: View all git branches
-	kall = ! sh -c 'sh ~/gitkall.sh ' -
+	kall = ! sh -c 'sh ~/gitkall.sh ' - ; not working properly, need to put it in a script file, but usefull
 
 ## gitreset: Reset the branch to remote state
 	gitreset = !sh -c 'git cm && git fetch origin && git reset --hard origin/master' -
@@ -137,6 +156,9 @@
 
 ## k
 	k = !sh -c 'gitk' -
+
+## mreset
+	mreset = !sh -c 'git reset --hard origin/master' -
 
 [push]
         default = matching
